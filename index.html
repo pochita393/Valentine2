@@ -1,0 +1,313 @@
+<html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Story ❤️</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Georgia,serif;}
+
+body{
+ background:black;
+ color:white;
+ overflow:hidden;
+ height:100vh;
+}
+
+/* ===== SCENES ===== */
+.scene{
+ position:absolute;
+ inset:0;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ text-align:center;
+ flex-direction:column;
+ opacity:0;
+ transition:1s;
+ background-size:cover;
+ background-position:center;
+}
+
+.scene.active{opacity:1;z-index:5;}
+
+.overlay{
+ position:absolute;
+ inset:0;
+ background:rgba(0,0,0,.65);
+ z-index:1;
+}
+
+/* ensure text + buttons are above slideshow */
+.scene > *:not(.overlay):not(.slideshow){
+ position:relative;
+ z-index:3;
+}
+
+h1{
+ font-size:3rem;
+ text-shadow:0 0 25px pink;
+ margin-bottom:20px;
+}
+
+p{
+ font-size:1.3rem;
+ max-width:700px;
+ margin-bottom:40px;
+}
+
+button{
+ padding:14px 30px;
+ border:none;
+ border-radius:40px;
+ font-size:18px;
+ cursor:pointer;
+ background:white;
+ color:#ff4d88;
+ font-weight:bold;
+ transition:.3s;
+}
+
+button:hover{
+ transform:scale(1.1);
+}
+
+/* ===== SLIDESHOW FIX ===== */
+.slideshow{
+ position:absolute;
+ inset:0;
+ z-index:0;
+}
+
+.slideshow img{
+ position:absolute;
+ inset:0;
+ width:100%;
+ height:100%;
+ object-fit:cover;
+ opacity:0;
+ animation:slide 18s infinite;
+}
+
+.slideshow img:nth-child(2){animation-delay:4s;}
+.slideshow img:nth-child(3){animation-delay:10s;}
+
+@keyframes slide{
+ 0%{opacity:0}
+ 10%{opacity:1}
+ 30%{opacity:1}
+ 40%{opacity:0}
+}
+
+/* ===== PETALS ===== */
+@keyframes fall{
+ to{transform:translateY(110vh) rotate(360deg);opacity:0;}
+}
+
+.timer{
+ font-size:2.2rem;
+ margin-top:20px;
+}
+
+input{
+ padding:10px 15px;
+ border-radius:25px;
+ border:none;
+ margin-bottom:20px;
+ text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🎵 MUSIC -->
+<audio id="music" autoplay loop>
+<source src="assets/Your Name. - Opening 【Yume Tourou】 4K 60FPS Creditless  CC - Neobrane.mp3" type="audio/mp3">
+</audio>
+
+<!-- ================= SCENE 1 ================= -->
+<div class="scene active" style="background-image:url('assets/wallpaperflare.com_wallpaper.jpg')">
+<div class="overlay"></div>
+
+<h1 id="typing"></h1>
+<p>Hehe!! Again being single? No Valentine? Well I'm here</p>
+<button onclick="startStory()">Begin →</button>
+</div>
+
+<!-- ================= SCENE 2 ================= -->
+<div class="scene">
+<div class="slideshow">
+<img src="assets/kaguya-and-miyuki-couple.webp">
+<img src="assets/mai-and-sakuta-couple.jpg">
+<img src="assets/bvxmtd788xh11.jpg">
+</div>
+
+<div class="overlay"></div>
+
+<h1>Fact</h1>
+<p>Kinda sad that we both single. And not seeing each other. But maybe. What if we are the Ideal match?<div>YNK</div> </p>
+<button onclick="nextScene()">Next →</button>
+</div>
+
+<!-- ================= SCENE 3 ================= -->
+<div class="scene" style="background-image:url('assets/YourName-heading.jpg')">
+<div class="overlay"></div>
+
+<h1>For the sake of smth</h1>
+<p>14th a onek offer ase restaurant a. so.. yk</p>
+<button onclick="nextScene()">One Last Thing →</button>
+</div>
+
+<!-- ================= SCENE 4 ================= -->
+<div class="scene" style="background-image:url('assets/is-there-anything-worse-than-a-crying-anya-v0-pnwm112kq8ae1.webp')">
+<div class="overlay"></div>
+
+<h1>Will you be my Valentine? ❤️ <div>PS. Hoile free food.</div></h1>
+
+<input id="loverName" placeholder="Type your name ✨">
+
+<div>
+<button id="yes">Yes 💖</button>
+<button id="no">No 🙈</button>
+</div>
+
+<p id="success" style="display:none;margin-top:20px;">
+bleh
+</div>
+
+<!-- ================= SCENE 5 ================= -->
+<div class="scene" style="background-image:url('assets/is-there-anything-worse-than-a-crying-anya-v0-rolhi22kq8ae1.webp')">
+<div class="overlay"></div>
+
+<h1>Our Date Begins In… ❤️</h1>
+<div class="timer" id="countdown"></div>
+<p>Every second brings me closer to you ✨</p>
+</div>
+
+<script>
+
+/* ===== SCENE CONTROL ===== */
+let current=0;
+const scenes=document.querySelectorAll(".scene");
+
+function nextScene(){
+ if(current < scenes.length - 1){
+   scenes[current].classList.remove("active");
+   current++;
+   scenes[current].classList.add("active");
+ }
+}
+
+function startStory(){
+ document.getElementById("music").play();
+ nextScene();
+}
+
+/* ===== NAME TYPING ===== */
+const text="For You ❤️";
+let i=0;
+(function type(){
+ if(i<text.length){
+  document.getElementById("typing").innerHTML+=text[i++];
+  setTimeout(type,120);
+ }
+})();
+
+/* ===== NO BUTTON RUNS ===== */
+const no=document.getElementById("no");
+no.onmouseover=()=>{
+ no.style.transform=
+ `translate(${Math.random()*200-100}px,
+            ${Math.random()*120-60}px)`;
+};
+
+/* ===== YES BUTTON ===== */
+document.getElementById("yes").onclick=()=>{
+
+ document.getElementById("success").style.display="block";
+
+ startPetals();
+ createPDF();
+
+ setTimeout(()=>{
+   nextScene();
+   startCountdown();
+ },4000);
+};
+
+/* ===== PETALS (limited duration) ===== */
+function startPetals(){
+ const petalInterval=setInterval(()=>{
+   const p=document.createElement("div");
+   p.innerHTML="🌹";
+   p.style.position="fixed";
+   p.style.left=Math.random()*100+"vw";
+   p.style.top="-20px";
+   p.style.fontSize="24px";
+   p.style.animation="fall 6s linear forwards";
+   document.body.appendChild(p);
+   setTimeout(()=>p.remove(),6000);
+ },300);
+
+ setTimeout(()=>clearInterval(petalInterval),10000);
+}
+
+/* ===== PDF ===== */
+function createPDF(){
+ const { jsPDF } = window.jspdf;
+ const doc=new jsPDF();
+
+ const name=document.getElementById("loverName").value || "My Love";
+
+ doc.setFontSize(22);
+ doc.text("A Letter For You ❤️",20,30);
+
+ doc.setFontSize(14);
+ doc.text(`Dear ${name},
+
+From the moment you entered my life,
+everything felt brighter.
+
+This little story was only a glimpse
+of how special you are to me.
+
+Thank you for saying yes.
+
+— Yours 
+Raka <3`,20,50,{maxWidth:170});
+
+ doc.save("our_story.pdf");
+}
+
+/* ===== COUNTDOWN (safe) ===== */
+function startCountdown(){
+ const date=new Date(2026,1,14,19,0,0);
+
+ const interval=setInterval(()=>{
+   const now=new Date();
+   const diff=date-now;
+
+   if(diff <= 0){
+     document.getElementById("countdown").innerHTML="It's Time ❤️";
+     clearInterval(interval);
+     return;
+   }
+
+   const d=Math.floor(diff/86400000);
+   const h=Math.floor(diff/3600000)%24;
+   const m=Math.floor(diff/60000)%60;
+   const s=Math.floor(diff/1000)%60;
+
+   document.getElementById("countdown").innerHTML=
+   `${d}d ${h}h ${m}m ${s}s`;
+ },1000);
+}
+
+</script>
+
+</body>
+</html>
